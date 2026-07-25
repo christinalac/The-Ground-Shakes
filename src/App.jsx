@@ -4,7 +4,6 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Favorites from "./pages/Favorites";
 import Navbar from "./components/Navbar";
-import MapComponent from "./MapComponent";
 
 function App() {
   return (
@@ -16,11 +15,6 @@ function App() {
           <Route path="/About" element={<About />} />
           <Route path="/Favorites" element={<Favorites />} />
         </Routes>
-
-        <div style={{ padding: "20px" }}>
-          <h2>Map</h2>
-          <MapComponent />
-        </div>
       </div>
     </BrowserRouter>
   );

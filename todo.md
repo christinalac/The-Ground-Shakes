@@ -14,8 +14,8 @@
 - Document API failure handling
 
 ### Christina Tasks:
-- [ ] Complete earthquake map React component
-- [ ] Connect map component to earthquake API endpoint
+- [x] Complete earthquake map React component
+- [x] Connect map component to earthquake API endpoint
 - [ ] Display live earthquake data from backend
 - [ ] Implement markers/popups using API response data
 - [ ] Handle loading state while map data loads
