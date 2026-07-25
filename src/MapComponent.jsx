@@ -10,6 +10,7 @@ import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { fromLonLat } from "ol/proj";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
+import { getQuakeCoordinates } from "./utils/quakeUtils";
 
 const MapComponent = ({ quakes = [] }) => {
   const mapRef = useRef(null);
@@ -34,15 +35,13 @@ const MapComponent = ({ quakes = [] }) => {
     });
 
     const features = quakes
-      .filter((quake) => {
-        const coords = quake?.geometry?.coordinates || quake?.coordinates;
-        return (Array.isArray(coords) && coords.length >= 2)
-          || (typeof quake?.lng === 'number' && typeof quake?.lat === 'number');
-      })
       .map((quake) => {
-        const coords = quake?.geometry?.coordinates || quake?.coordinates;
-        const lon = Array.isArray(coords) ? coords[0] : quake?.lng;
-        const lat = Array.isArray(coords) ? coords[1] : quake?.lat;
+        const coordinates = getQuakeCoordinates(quake);
+        if (!coordinates) {
+          return null;
+        }
+
+        const { lon, lat } = coordinates;
         const feature = new Feature({
           geometry: new Point(fromLonLat([lon, lat])),
           name: quake?.properties?.place || quake?.place || "Earthquake",
@@ -59,7 +58,8 @@ const MapComponent = ({ quakes = [] }) => {
         );
 
         return feature;
-      });
+      })
+      .filter(Boolean);
 
     vectorSource.addFeatures(features);
 
