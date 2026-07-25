@@ -4,6 +4,8 @@ import { normalizeQuakes } from '../utils/quakeUtils';
 
 function Home() {
     const [quakes, setQuakes] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         fetch('/api/quakes')
@@ -15,18 +17,30 @@ function Home() {
             })
             .then((data) => {
                 setQuakes(normalizeQuakes(data));
+                setErrorMessage('');
             })
             .catch((error) => {
                 console.error('Error fetching earthquake data:', error);
                 setQuakes([]);
+                setErrorMessage('Unable to load earthquake data right now.');
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     }, []);
 
     return (
         <div style={{ padding: '20px' }}>
             <h1>The Ground Shakes</h1>
-            <p>Number of Earthquakes: {quakes.length}</p>
-            <MapComponent quakes={quakes} />
+            {isLoading ? (
+                <p>Loading earthquakes...</p>
+            ) : (
+                <>
+                    <p>Number of Earthquakes: {quakes.length}</p>
+                    {errorMessage ? <p role="alert">{errorMessage}</p> : null}
+                </>
+            )}
+            <MapComponent quakes={quakes} isLoading={isLoading} errorMessage={errorMessage} />
         </div>
     );
 }

@@ -16,20 +16,28 @@
 ### Christina Tasks:
 - [x] Complete earthquake map React component
 - [x] Connect map component to earthquake API endpoint
-- [ ] Display live earthquake data from backend
-- [ ] Implement markers/popups using API response data
-- [ ] Handle loading state while map data loads
-- [ ] Handle API errors on map
+- [x] Display live earthquake data from backend
+- [x] Implement markers/popups using API response data
+- [x] Handle loading state while map data loads
+- [x] Handle API errors on map
 
 ### Frontend Member Tasks:
-- [ ] Complete dashboard UI
-- [ ] Connect forms to Express API
-- [ ] Verify JSON request bodies
-- [ ] Add frontend validation
-- [ ] Handle failed requests
+- [x] Complete dashboard UI
+- [x] Connect forms to Express API
+- [x] Verify JSON request bodies
+- [x] Add frontend validation
+- [x] Handle failed requests
 
 Deliverable:
 - List of React components + API endpoints used
+
+#### Frontend integration summary
+- Home page: fetches /api/quakes and normalizes quake data for the map.
+- MapComponent: renders OpenLayers markers, shows popup details for each quake, and surfaces loading/error states.
+- API request shape handled: flat quake array with lng/lat fields and optional geometry coordinates.
+- Loading state: shown while the request is in progress.
+- Error state: a visible alert appears when the API request fails.
+- Data flow: React state -> normalized quake array -> OpenLayers features -> marker popups.
 
 ---
 
