@@ -55,12 +55,12 @@ Deliverable:
   - Stored fields
 
 ### Tasks:
-- [ ] Configure database connection
-- [ ] Create earthquake data schema
-- [ ] Verify CRUD operations
-- [ ] Confirm API reads from database
-- [ ] Confirm API writes to database
-- [ ] Test persistent storage
+- [x ] Configure database connection
+- [x ] Create earthquake data schema
+- [x ] Verify CRUD operations
+- [x ] Confirm API reads from database
+- [x ] Confirm API writes to database
+- [x ] Test persistent storage
 
 Deliverable:
 - Database architecture explanation
