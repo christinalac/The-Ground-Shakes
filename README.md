@@ -44,3 +44,6 @@ Ctrl + Shift + `
 Type: 'git push'
 Type: 'git -m "add your comment here"
 Type: 'git add ."
+
+## Authentication Check
+Authentication middleware is used to protect the GET and POST endpoints. The middleware returns 402 Unauthorized as a response to a request without a authorization header

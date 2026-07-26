@@ -8,10 +8,17 @@ function Home() {
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        fetch('/api/quakes')
+        fetch('/api/quakes',{
+            headers: {
+                Authorization: "Bearer test"
+            }
+        })
             .then((response) => {
+                if (response.status === 401) {
+                  throw new Error('You are not authorized');
+                }
                 if (!response.ok) {
-                    throw new Error('Failed to fetch quake data');
+                throw new Error('Failed to fetch quake data');
                 }
                 return response.json();
             })
@@ -22,7 +29,7 @@ function Home() {
             .catch((error) => {
                 console.error('Error fetching earthquake data:', error);
                 setQuakes([]);
-                setErrorMessage('Unable to load earthquake data right now.');
+                setErrorMessage(error.message);
             })
             .finally(() => {
                 setIsLoading(false);

@@ -76,16 +76,17 @@ Deliverable:
 - Explain unauthorized behavior
 
 ### Tasks:
-- [ ] Create authentication middleware
-- [ ] Protect required routes
-- [ ] Test unauthorized requests
-- [ ] Return correct 401 responses
-- [ ] Document protected endpoints
+- [x] Create authentication middleware
+- [x] Protect required routes
+- [x] Test unauthorized requests
+- [x] Return correct 401 responses
+- [x] Document protected endpoints
 
 Frontend Requirements:
-- [ ] Detect 401 responses
+- [x] Detect 401 responses
 - [ ] Redirect unauthenticated users
-- [ ] Display login/error messages
+      Nowhere to direct to yet
+- [x] Display login/error messages
 
 Deliverable:
 - Authentication flow explanation

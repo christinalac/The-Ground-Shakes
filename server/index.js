@@ -4,14 +4,14 @@ const cors = require('cors');
 const fetch = require('node-fetch');
 const connectDB = require('./db');
 const Quake = require('./models/Quake');
-
+const authMiddleware = require('./middleware/auth');
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 connectDB();
 
-app.get('/api/quakes', async (req, res) => {
+app.get('/api/quakes', authMiddleware, async (req, res) => {
   try {
     const quakes = await Quake.find().sort({ time: -1 }).limit(500);
     res.json(quakes);
@@ -20,7 +20,7 @@ app.get('/api/quakes', async (req, res) => {
   }
 });
 
-app.post('/api/quakes/sync', async (req, res) => {
+app.post('/api/quakes/sync', authMiddleware, async (req, res) => {
   try {
     const response = await fetch(
       'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson'
