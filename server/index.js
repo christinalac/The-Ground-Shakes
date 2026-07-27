@@ -11,6 +11,15 @@ app.use(express.json());
 
 connectDB();
 
+app.get('/quakes', authMiddleware, async (req, res) => {
+  try {
+    const quakes = await Quake.find().sort({ time: -1 }).limit(500);
+    res.json(quakes);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to read from database' });
+  }
+});
+
 app.get('/api/quakes', authMiddleware, async (req, res) => {
   try {
     const quakes = await Quake.find().sort({ time: -1 }).limit(500);
