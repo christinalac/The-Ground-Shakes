@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "ol/ol.css";
 import Map from "ol/Map";
 import Overlay from "ol/Overlay";
@@ -12,12 +12,14 @@ import VectorLayer from "ol/layer/Vector";
 import { fromLonLat } from "ol/proj";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { getQuakeCoordinates } from "./utils/quakeUtils";
+import { useFavorites } from "./hooks/useFavorites";
 
 const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => {
   const mapRef = useRef(null);
   const popupRef = useRef(null);
   const [status, setStatus] = useState("Loading earthquakes...");
   const [selectedQuake, setSelectedQuake] = useState(null);
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -39,40 +41,48 @@ const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => 
       }),
     });
 
+    // Overlay anchored to the clicked marker
     const popupOverlay = new Overlay({
       element: popupRef.current,
+      positioning: "bottom-left",
+      offset: [12, -12],
       autoPan: true,
       autoPanAnimation: { duration: 250 },
+      stopEvent: false,
     });
     map.addOverlay(popupOverlay);
 
-    const handleFeatureClick = (event) => {
-      const feature = event?.feature;
+    // Click a marker to show popup, click empty space to close
+    const handleClick = (event) => {
+      const feature = map.forEachFeatureAtPixel(event.pixel, (f) => f);
       const quake = feature?.get("quake");
 
-      if (!quake) {
+      if (quake) {
+        setSelectedQuake(quake);
+        popupOverlay.setPosition(event.coordinate);
+      } else {
         setSelectedQuake(null);
         popupOverlay.setPosition(undefined);
-        return;
       }
-
-      setSelectedQuake(quake);
-      popupOverlay.setPosition(feature.getGeometry().getCoordinates());
     };
 
-    map.on("singleclick", handleFeatureClick);
+    // Change cursor when hovering over a marker
+    const handlePointerMove = (event) => {
+      const hit = map.hasFeatureAtPixel(event.pixel);
+      map.getTargetElement().style.cursor = hit ? "pointer" : "";
+    };
+
+    map.on("singleclick", handleClick);
+    map.on("pointermove", handlePointerMove);
 
     const features = quakes
       .map((quake) => {
         const coordinates = getQuakeCoordinates(quake);
-        if (!coordinates) {
-          return null;
-        }
+        if (!coordinates) return null;
 
         const { lon, lat } = coordinates;
         const feature = new Feature({
           geometry: new Point(fromLonLat([lon, lat])),
-          name: quake?.properties?.place || quake?.place || "Earthquake",
         });
 
         feature.set("quake", quake);
@@ -98,55 +108,104 @@ const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => 
     } else if (isLoading) {
       setStatus("Loading earthquakes...");
     } else if (features.length) {
-      setStatus(`Showing ${features.length} earthquake markers`);
+      setStatus(`Showing ${features.length} earthquake markers — click a marker for details`);
     } else {
       setStatus("No earthquake points available for this response");
     }
 
     return () => {
-      map.un("singleclick", handleFeatureClick);
+      map.un("singleclick", handleClick);
+      map.un("pointermove", handlePointerMove);
       map.setTarget(null);
     };
   }, [quakes, isLoading, errorMessage]);
 
+  const quakeId = selectedQuake?._id || selectedQuake?.usgsId;
+  const favorited = quakeId ? isFavorite(quakeId) : false;
+
   return (
     <div>
       <p>{status}</p>
+
       <div style={{ position: "relative" }}>
+        {/* Map */}
         <div
           ref={mapRef}
           style={{
             width: "100%",
-            height: "400px",
+            height: "500px",
             border: "1px solid #ccc",
           }}
         />
+
+        {/* Popup anchored to the clicked marker */}
         <div
           ref={popupRef}
           style={{
             position: "absolute",
-            minWidth: "180px",
-            padding: "8px",
-            background: "white",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
+            minWidth: "220px",
+            padding: "12px 14px",
+            background: "rgba(255,255,255,0.97)",
+            border: "1px solid #aaa",
+            borderRadius: "6px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+            fontSize: "13px",
+            lineHeight: "1.7",
             display: selectedQuake ? "block" : "none",
-            pointerEvents: "none",
+            zIndex: 1000,
           }}
         >
-          {selectedQuake ? (
+          {selectedQuake && (
             <>
-              <strong>{selectedQuake?.properties?.place || selectedQuake?.place || "Earthquake"}</strong>
-              <div>Magnitude: {selectedQuake?.magnitude ?? selectedQuake?.properties?.mag ?? selectedQuake?.mag ?? "N/A"}</div>
-              <div>Lat: {selectedQuake?.lat ?? "N/A"}</div>
-              <div>Lon: {selectedQuake?.lon ?? selectedQuake?.lng ?? "N/A"}</div>
-              {selectedQuake?.depth != null && <div>Depth: {selectedQuake.depth} km</div>}
-              {selectedQuake?.time && <div>Time: {new Date(selectedQuake.time).toLocaleString()}</div>}
-              {selectedQuake?.url && (
-                <div><a href={selectedQuake.url} target="_blank" rel="noreferrer">USGS Details</a></div>
+              {/* Header: place name + close button */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
+                <strong style={{ fontSize: "13px", maxWidth: "170px" }}>
+                  {selectedQuake.properties?.place || selectedQuake.place || "Earthquake"}
+                </strong>
+                <button
+                  onClick={() => setSelectedQuake(null)}
+                  style={{ background: "none", border: "none", cursor: "pointer", fontSize: "14px", color: "#888", padding: "0", marginLeft: "8px" }}
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Details */}
+              <div>
+                <span style={{ color: "#555" }}>Magnitude:</span>{" "}
+                <strong>{selectedQuake.magnitude ?? selectedQuake.properties?.mag ?? selectedQuake.mag ?? "N/A"}</strong>
+              </div>
+              <div><span style={{ color: "#555" }}>Lat:</span> {selectedQuake.lat ?? "N/A"}</div>
+              <div><span style={{ color: "#555" }}>Lon:</span> {selectedQuake.lon ?? selectedQuake.lng ?? "N/A"}</div>
+              {selectedQuake.depth != null && (
+                <div><span style={{ color: "#555" }}>Depth:</span> {selectedQuake.depth} km</div>
               )}
+              {selectedQuake.time && (
+                <div><span style={{ color: "#555" }}>Time:</span> {new Date(selectedQuake.time).toLocaleString()}</div>
+              )}
+              {selectedQuake.url && (
+                <div style={{ marginTop: "4px" }}>
+                  <a href={selectedQuake.url} target="_blank" rel="noreferrer" style={{ color: "#1a73e8" }}>
+                    USGS Details →
+                  </a>
+                </div>
+              )}
+
+              {/* Favorite checkbox */}
+              <div style={{ marginTop: "8px", borderTop: "1px solid #ddd", paddingTop: "8px" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={favorited}
+                    onChange={() => toggleFavorite(selectedQuake)}
+                    style={{ width: "15px", height: "15px", cursor: "pointer" }}
+                  />
+                  <span>Favorite</span>
+                </label>
+              </div>
             </>
-          ) : null}
+          )}
         </div>
       </div>
     </div>
