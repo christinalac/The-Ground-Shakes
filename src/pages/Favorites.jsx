@@ -2,6 +2,7 @@ import { useFavorites } from "../hooks/useFavorites";
 
 function Favorites() {
   const { favorites, toggleFavorite } = useFavorites();
+  
 
   return (
     <div className="page-container">
@@ -79,5 +80,5 @@ function Favorites() {
         })}
         </div>
       );
-
+      
       export default Favorites;
