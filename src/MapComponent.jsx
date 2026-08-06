@@ -41,7 +41,6 @@ const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => 
       }),
     });
 
-    // Overlay anchored to the clicked marker
     const popupOverlay = new Overlay({
       element: popupRef.current,
       positioning: "bottom-left",
@@ -52,7 +51,6 @@ const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => 
     });
     map.addOverlay(popupOverlay);
 
-    // Click a marker to show popup, click empty space to close
     const handleClick = (event) => {
       const feature = map.forEachFeatureAtPixel(event.pixel, (f) => f);
       const quake = feature?.get("quake");
@@ -66,7 +64,6 @@ const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => 
       }
     };
 
-    // Change cursor when hovering over a marker
     const handlePointerMove = (event) => {
       const hit = map.hasFeatureAtPixel(event.pixel);
       map.getTargetElement().style.cursor = hit ? "pointer" : "";
@@ -91,8 +88,8 @@ const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => 
           new Style({
             image: new CircleStyle({
               radius: 7,
-              fill: new Fill({ color: "red" }),
-              stroke: new Stroke({ color: "white", width: 2 }),
+              fill: new Fill({ color: "#c0392b" }),
+              stroke: new Stroke({ color: "#fdfdfd", width: 2 }),
             }),
           })
         );
@@ -124,82 +121,83 @@ const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => 
   const favorited = quakeId ? isFavorite(quakeId) : false;
 
   return (
-    <div>
-      <p>{status}</p>
+    <div className="map-container">
+      <p className="map-status">{status}</p>
 
-      <div style={{ position: "relative" }}>
-        {/* Map */}
-        <div
-          ref={mapRef}
-          style={{
-            width: "100%",
-            height: "500px",
-            border: "1px solid #ccc",
-          }}
-        />
+      <div className="map-wrapper">
+        <div ref={mapRef} className="map-view" />
 
-        {/* Popup anchored to the clicked marker */}
         <div
           ref={popupRef}
-          style={{
-            position: "absolute",
-            minWidth: "220px",
-            padding: "12px 14px",
-            background: "rgba(255,255,255,0.97)",
-            border: "1px solid #aaa",
-            borderRadius: "6px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-            fontSize: "13px",
-            lineHeight: "1.7",
-            display: selectedQuake ? "block" : "none",
-            zIndex: 1000,
-          }}
+          className={`quake-popup ${selectedQuake ? "quake-popup--visible" : ""}`}
         >
           {selectedQuake && (
             <>
-              {/* Header: place name + close button */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
-                <strong style={{ fontSize: "13px", maxWidth: "170px" }}>
-                  {selectedQuake.properties?.place || selectedQuake.place || "Earthquake"}
+              <div className="quake-popup-header">
+                <strong className="quake-popup-title">
+                  {selectedQuake.properties?.place ||
+                    selectedQuake.place ||
+                    "Earthquake"}
                 </strong>
                 <button
+                  className="quake-popup-close"
                   onClick={() => setSelectedQuake(null)}
-                  style={{ background: "none", border: "none", cursor: "pointer", fontSize: "14px", color: "#888", padding: "0", marginLeft: "8px" }}
                   aria-label="Close"
                 >
                   ✕
                 </button>
               </div>
 
-              {/* Details */}
-              <div>
-                <span style={{ color: "#555" }}>Magnitude:</span>{" "}
-                <strong>{selectedQuake.magnitude ?? selectedQuake.properties?.mag ?? selectedQuake.mag ?? "N/A"}</strong>
-              </div>
-              <div><span style={{ color: "#555" }}>Lat:</span> {selectedQuake.lat ?? "N/A"}</div>
-              <div><span style={{ color: "#555" }}>Lon:</span> {selectedQuake.lon ?? selectedQuake.lng ?? "N/A"}</div>
-              {selectedQuake.depth != null && (
-                <div><span style={{ color: "#555" }}>Depth:</span> {selectedQuake.depth} km</div>
-              )}
-              {selectedQuake.time && (
-                <div><span style={{ color: "#555" }}>Time:</span> {new Date(selectedQuake.time).toLocaleString()}</div>
-              )}
-              {selectedQuake.url && (
-                <div style={{ marginTop: "4px" }}>
-                  <a href={selectedQuake.url} target="_blank" rel="noreferrer" style={{ color: "#1a73e8" }}>
-                    USGS Details →
-                  </a>
+              <div className="quake-popup-details">
+                <div>
+                  <span className="quake-popup-label">Magnitude:</span>{" "}
+                  <strong>
+                    {selectedQuake.magnitude ??
+                      selectedQuake.properties?.mag ??
+                      selectedQuake.mag ??
+                      "N/A"}
+                  </strong>
                 </div>
-              )}
+                <div>
+                  <span className="quake-popup-label">Lat:</span>{" "}
+                  {selectedQuake.lat ?? "N/A"}
+                </div>
+                <div>
+                  <span className="quake-popup-label">Lon:</span>{" "}
+                  {selectedQuake.lon ?? selectedQuake.lng ?? "N/A"}
+                </div>
+                {selectedQuake.depth != null && (
+                  <div>
+                    <span className="quake-popup-label">Depth:</span>{" "}
+                    {selectedQuake.depth} km
+                  </div>
+                )}
+                {selectedQuake.time && (
+                  <div>
+                    <span className="quake-popup-label">Time:</span>{" "}
+                    {new Date(selectedQuake.time).toLocaleString()}
+                  </div>
+                )}
+                {selectedQuake.url && (
+                  <div className="quake-popup-link-wrapper">
+                    <a
+                      href={selectedQuake.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="quake-popup-link"
+                    >
+                      USGS Details →
+                    </a>
+                  </div>
+                )}
+              </div>
 
-              {/* Favorite checkbox */}
-              <div style={{ marginTop: "8px", borderTop: "1px solid #ddd", paddingTop: "8px" }}>
-                <label style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer" }}>
+              <div className="quake-popup-favorite">
+                <label className="quake-popup-favorite-label">
                   <input
                     type="checkbox"
                     checked={favorited}
                     onChange={() => toggleFavorite(selectedQuake)}
-                    style={{ width: "15px", height: "15px", cursor: "pointer" }}
                   />
                   <span>Favorite</span>
                 </label>
