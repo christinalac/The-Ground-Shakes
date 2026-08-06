@@ -70,15 +70,18 @@ function Favorites() {
                         rel="noreferrer"
                         className="favorite-link"
                       >
-                        View on USGS →
+                         View on USGS →
                       </a>
                     </div>
                   )}
                 </div>
               </div>
             );
-        })}
+          })}
         </div>
-      );
-      
-      export default Favorites;
+      )}
+    </div>
+  );
+}
+
+export default Favorites;
