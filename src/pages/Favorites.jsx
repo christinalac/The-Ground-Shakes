@@ -4,86 +4,99 @@ function Favorites() {
   const { favorites, toggleFavorite } = useFavorites();
 
   return (
-    <div className="page-content">
-      <h1>Favorites</h1>
+    <main>
+      <section>
+        <h1 className="page-title">Favorite Earthquakes</h1>
 
-      {favorites.length === 0 ? (
-        <p>
-          No favorites saved yet. Click a marker on the map and check the
-          Favorite box to save one.
-        </p>
-      ) : (
-        <div className="favorites-list">
-          {favorites.map((quake) => {
-            const id = quake._id || quake.usgsId;
-            const place =
-              quake.properties?.place || quake.place || "Earthquake";
-            const magnitude =
-              quake.magnitude ??
-              quake.properties?.mag ??
-              quake.mag ??
-              "N/A";
+        {favorites.length === 0 ? (
+          <p className="page-content">
+            No favorite earthquakes saved yet. Select an earthquake marker
+            and choose the favorite option to save it here.
+          </p>
+        ) : (
+          <ul className="favorites-list">
+            {favorites.map((quake) => {
+              const id = quake._id || quake.usgsId;
 
-            return (
-              <div key={id} className="favorite-card">
-                <div className="favorite-header">
-                  <strong className="favorite-title">{place}</strong>
+              const place =
+                quake.properties?.place ||
+                quake.place ||
+                "Earthquake";
 
-                  <button
-                    onClick={() => toggleFavorite(quake)}
-                    className="favorite-remove-btn"
-                  >
-                    Remove
-                  </button>
-                </div>
+              const magnitude =
+                quake.magnitude ??
+                quake.properties?.mag ??
+                quake.mag ??
+                "N/A";
 
-                <div className="favorite-grid">
-                  <div>
-                    <span className="favorite-label">Magnitude:</span>{" "}
-                    <strong>{magnitude}</strong>
-                  </div>
+              return (
+                <li key={id}>
+                  <article className="favorite-card">
+                    <header className="favorite-header">
+                      <h2 className="favorite-title">{place}</h2>
 
-                  <div>
-                    <span className="favorite-label">Depth:</span>{" "}
-                    {quake.depth != null ? `${quake.depth} km` : "N/A"}
-                  </div>
+                      <button
+                        onClick={() => toggleFavorite(quake)}
+                        className="favorite-remove-btn"
+                        aria-label={`Remove ${place} from favorites`}
+                      >
+                        Remove
+                      </button>
+                    </header>
 
-                  <div>
-                    <span className="favorite-label">Lat:</span>{" "}
-                    {quake.lat ?? "N/A"}
-                  </div>
+                    <dl className="favorite-grid">
+                      <div>
+                        <dt>Magnitude</dt>
+                        <dd>{magnitude}</dd>
+                      </div>
 
-                  <div>
-                    <span className="favorite-label">Lon:</span>{" "}
-                    {quake.lon ?? quake.lng ?? "N/A"}
-                  </div>
+                      <div>
+                        <dt>Depth</dt>
+                        <dd>
+                          {quake.depth != null
+                            ? `${quake.depth} km`
+                            : "N/A"}
+                        </dd>
+                      </div>
 
-                  {quake.time && (
-                    <div className="favorite-full">
-                      <span className="favorite-label">Time:</span>{" "}
-                      {new Date(quake.time).toLocaleString()}
-                    </div>
-                  )}
+                      <div>
+                        <dt>Latitude</dt>
+                        <dd>{quake.lat ?? "N/A"}</dd>
+                      </div>
 
-                  {quake.url && (
-                    <div className="favorite-full">
+                      <div>
+                        <dt>Longitude</dt>
+                        <dd>{quake.lon ?? quake.lng ?? "N/A"}</dd>
+                      </div>
+
+                      {quake.time && (
+                        <div>
+                          <dt>Time</dt>
+                          <dd>
+                            {new Date(quake.time).toLocaleString()}
+                          </dd>
+                        </div>
+                      )}
+                    </dl>
+
+                    {quake.url && (
                       <a
                         href={quake.url}
                         target="_blank"
                         rel="noreferrer"
                         className="favorite-link"
                       >
-                        View on USGS →
+                        View earthquake details on USGS
                       </a>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+                    )}
+                  </article>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+    </main>
   );
 }
 

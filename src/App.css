@@ -303,3 +303,46 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+
+
+/* Footer */
+.footer {
+  background: var(--modern-white);
+  border-top: 1px solid var(--modern-gray);
+  padding: 16px 20px;
+  margin-top: auto;
+}
+
+.footer-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.footer-link {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
+
+/* Mobile Footer */
+@media (max-width: 600px) {
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
