@@ -9,6 +9,7 @@ import Favorites from "./pages/Favorites";
 import "./App.css";
 
 function App() {
+  // Dark Mode
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
@@ -18,6 +19,34 @@ function App() {
     document.body.classList.toggle("dark-mode", darkMode);
   }, [darkMode]);
 
+  // Earthquake Data
+  const [quakes, setQuakes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function fetchQuakes() {
+      try {
+        setIsLoading(true);
+        setErrorMessage("");
+
+        const response = await fetch("/api/earthquakes");
+        if (!response.ok) {
+          throw new Error("Failed to fetch earthquake data");
+        }
+
+        const data = await response.json();
+        setQuakes(data);
+      } catch (error) {
+        setErrorMessage(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchQuakes();
+  }, []);
+
   return (
     <BrowserRouter>
       <div className="app-container">
@@ -25,8 +54,19 @@ function App() {
 
         <div className="page-wrapper">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route
+              path="/"
+              element={
+                <Home
+                  quakes={quakes}
+                  isLoading={isLoading}
+                  errorMessage={errorMessage}
+                />
+              }
+            />
+
             <Route path="/about" element={<About />} />
+
             <Route path="/favorites" element={<Favorites />} />
           </Routes>
         </div>
