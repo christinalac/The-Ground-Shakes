@@ -11,6 +11,8 @@ app.use(express.json());
 
 connectDB();
 
+
+
 app.get('/api/quakes', authMiddleware, async (req, res) => {
   try {
     const quakes = await Quake.find().sort({ time: -1 }).limit(500);

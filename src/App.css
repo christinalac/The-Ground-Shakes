@@ -1,4 +1,4 @@
-//Global Color Pallete
+/* Global Color Palette */
 :root {
   --earth-dark: #2F3E2C;
   --earth-sage: #5C7457;
@@ -12,7 +12,7 @@
   --text-light: #fdfdfb;
 }
 
-//Dark Mode 
+/* Dark Mode */
 body.dark-mode {
   --earth-dark: #1e1e1e;
   --earth-sage: #3a3a3a;
@@ -22,11 +22,12 @@ body.dark-mode {
   --modern-gray: #555;
   --text-main: #fdfdfb;
   --accent-blue: #8ab4f8;
+
   background: #121212;
-  color: var(--text-light);
+  color: var(--text-main);
 }
 
-//Global Reset & Body 
+/* Global Reset & Body */
 body {
   margin: 0;
   padding: 0;
@@ -36,7 +37,7 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-//App Layout
+/* App Layout */
 .app-container {
   min-height: 100vh;
   display: flex;
@@ -48,7 +49,7 @@ body {
   padding: 2rem 1.5rem;
 }
 
-//Navbar 
+/* Navbar */
 .navbar {
   background: var(--modern-white);
   border-bottom: 1px solid var(--modern-gray);
@@ -94,7 +95,7 @@ body {
   background: rgba(26,115,232,0.1);
 }
 
-//Page Structure 
+/* Page Structure */
 .page-container {
   max-width: 960px;
   margin: 0 auto;
@@ -118,7 +119,7 @@ body {
   font-weight: 500;
 }
 
-//Favorites
+/* Favorites */
 .favorites-list {
   display: flex;
   flex-direction: column;
@@ -185,7 +186,7 @@ body {
   text-decoration: underline;
 }
 
-//Map
+/* Map */
 .map-container {
   margin-top: 20px;
 }
@@ -208,7 +209,7 @@ body {
   overflow: hidden;
 }
 
-//Popup
+/* Popup */
 .quake-popup {
   position: absolute;
   min-width: 240px;
@@ -283,7 +284,7 @@ body {
   cursor: pointer;
 }
 
-//Responsive Design 
+/* Responsive Design */
 @media (max-width: 600px) {
   .navbar-inner {
     flex-direction: column;

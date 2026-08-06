@@ -28,6 +28,7 @@ function Favorites() {
               <div key={id} className="favorite-card">
                 <div className="favorite-header">
                   <strong className="favorite-title">{place}</strong>
+
                   <button
                     onClick={() => toggleFavorite(quake)}
                     className="favorite-remove-btn"
@@ -41,14 +42,17 @@ function Favorites() {
                     <span className="favorite-label">Magnitude:</span>{" "}
                     <strong>{magnitude}</strong>
                   </div>
+
                   <div>
                     <span className="favorite-label">Depth:</span>{" "}
                     {quake.depth != null ? `${quake.depth} km` : "N/A"}
                   </div>
+
                   <div>
                     <span className="favorite-label">Lat:</span>{" "}
                     {quake.lat ?? "N/A"}
                   </div>
+
                   <div>
                     <span className="favorite-label">Lon:</span>{" "}
                     {quake.lon ?? quake.lng ?? "N/A"}
@@ -80,3 +84,7 @@ function Favorites() {
         </div>
       )}
     </div>
+  );
+}
+
+export default Favorites;
