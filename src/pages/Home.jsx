@@ -1,55 +1,31 @@
-import { useEffect, useState } from 'react';
-import MapComponent from '../MapComponent';
-import { normalizeQuakes } from '../utils/quakeUtils';
+import MapComponent from "../MapComponent";
 
-function Home() {
-    const [quakes, setQuakes] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [errorMessage, setErrorMessage] = useState('');
+function Home({ quakes, isLoading, errorMessage }) {
+  return (
+    <div className="page-container">
+      <h1 className="page-title">The Ground Shakes</h1>
 
-    useEffect(() => {
-        fetch('/api/quakes',{
-            headers: {
-                Authorization: "Bearer test"
-            }
-        })
-            .then((response) => {
-                if (response.status === 401) {
-                  throw new Error('You are not authorized');
-                }
-                if (!response.ok) {
-                throw new Error('Failed to fetch quake data');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setQuakes(normalizeQuakes(data));
-                setErrorMessage('');
-            })
-            .catch((error) => {
-                console.error('Error fetching earthquake data:', error);
-                setQuakes([]);
-                setErrorMessage(error.message);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }, []);
+      {isLoading ? (
+        <p className="page-content">Loading earthquakes...</p>
+      ) : (
+        <>
+          <p className="page-content">
+            Number of Earthquakes: {quakes.length}
+          </p>
 
-    return (
-        <div style={{ padding: '20px' }}>
-            <h1>The Ground Shakes</h1>
-            {isLoading ? (
-                <p>Loading earthquakes...</p>
-            ) : (
-                <>
-                    <p>Number of Earthquakes: {quakes.length}</p>
-                    {errorMessage ? <p role="alert">{errorMessage}</p> : null}
-                </>
-            )}
-            <MapComponent quakes={quakes} isLoading={isLoading} errorMessage={errorMessage} />
-        </div>
-    );
+          {errorMessage && (
+            <p className="page-error">{errorMessage}</p>
+          )}
+        </>
+      )}
+
+      <MapComponent
+        quakes={quakes}
+        isLoading={isLoading}
+        errorMessage={errorMessage}
+      />
+    </div>
+  );
 }
 
 export default Home;
