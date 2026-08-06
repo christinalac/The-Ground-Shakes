@@ -9,13 +9,15 @@ function Favorites() {
 
       {favorites.length === 0 ? (
         <p className="page-content">
-          No favorites saved yet. Click a marker on the map and check the Favorite box to save one.
+          No favorites saved yet. Click a marker on the map and check the
+          Favorite box to save one.
         </p>
       ) : (
         <div className="favorites-list">
           {favorites.map((quake) => {
             const id = quake._id || quake.usgsId;
-            const place = quake.properties?.place || quake.place || "Earthquake";
+            const place =
+              quake.properties?.place || quake.place || "Earthquake";
             const magnitude =
               quake.magnitude ??
               quake.properties?.mag ??
@@ -27,8 +29,8 @@ function Favorites() {
                 <div className="favorite-header">
                   <strong className="favorite-title">{place}</strong>
                   <button
-                    className="favorite-remove-btn"
                     onClick={() => toggleFavorite(quake)}
+                    className="favorite-remove-btn"
                   >
                     Remove
                   </button>
@@ -78,7 +80,3 @@ function Favorites() {
         </div>
       )}
     </div>
-  );
-}
-
-export default Favorites;
