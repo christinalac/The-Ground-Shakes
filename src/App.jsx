@@ -1,3 +1,4 @@
+import "./App.css";
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -6,7 +7,6 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Favorites from "./pages/Favorites";
 
-import "./App.css";
 
 function App() {
   // Dark Mode
@@ -55,20 +55,15 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app-container">
-        <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
-
-        <div className="page-wrapper">
+            <div className="page-wrapper">
+            <Navbar/>
+            <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+              
           <Routes>
-            <Route
-              path="/"
-              element={
-                <Home
-                  quakes={quakes}
+            <Route path="/" element={<Home />}
+            <Route path="/aboutquakes={quakes}
                   isLoading={isLoading}
-                  errorMessage={errorMessage}
-                />
-              }
-            />
+                  errorMessage={errorMessage}/>}/>
 
             <Route path="/about" element={<About />} />
 
