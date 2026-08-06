@@ -12,6 +12,16 @@
   --text-light: #fdfdfb;
 }
 
+/* Global Reset & Body */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--earth-clay);
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-main);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
 /* Dark Mode */
 body.dark-mode {
   --earth-dark: #1e1e1e;
@@ -25,16 +35,6 @@ body.dark-mode {
 
   background: #121212;
   color: var(--text-main);
-}
-
-/* Global Reset & Body */
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--earth-clay);
-  font-family: Arial, Helvetica, sans-serif;
-  color: var(--text-main);
-  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* App Layout */
@@ -278,7 +278,7 @@ body {
 }
 
 .quake-popup-favorite-label {
-  display: flex;
+  display: flex
   align-items: center;
   gap: 6px;
   cursor: pointer;
