@@ -4,11 +4,11 @@ function Favorites() {
   const { favorites, toggleFavorite } = useFavorites();
 
   return (
-    <div className="page-container">
-      <h1 className="page-title">Favorites</h1>
+    <div className="page-content">
+      <h1>Favorites</h1>
 
       {favorites.length === 0 ? (
-        <p className="page-content">
+        <p>
           No favorites saved yet. Click a marker on the map and check the
           Favorite box to save one.
         </p>
