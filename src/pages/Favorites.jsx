@@ -76,7 +76,8 @@ function Favorites() {
                 </div>
               </div>
             );
-          })}
+        })}
         </div>
-      )}
-    </div>
+      );
+
+      export default Favorites;
