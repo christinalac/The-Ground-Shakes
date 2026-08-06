@@ -30,7 +30,12 @@ function App() {
         setIsLoading(true);
         setErrorMessage("");
 
-        const response = await fetch("/api/earthquakes");
+        const response = await fetch("/api/quakes", {
+          headers: {
+            Authorization: "Bearer test-token",
+          },
+        });
+
         if (!response.ok) {
           throw new Error("Failed to fetch earthquake data");
         }
