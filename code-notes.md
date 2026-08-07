@@ -2,19 +2,28 @@
 
 ---
 
-## How All the Files Connect (Big Picture)
+## How All the Files Connect (Big Picture) 
 
 ```
 Browser
-  └── src/index.js             ← starts the React app
-        └── src/App.jsx        ← sets up pages and navigation
-              ├── Navbar.jsx   ← shows the nav links at the top
-              ├── Home.jsx     ← fetches quake data, shows the map
-              │     ├── MapComponent.jsx   ← draws the map and popups
-              │     └── quakeUtils.js      ← cleans/normalizes quake data
-              ├── Favorites.jsx            ← shows saved favorites
-              │     └── useFavorites.js   ← reads/writes to localStorage
-              └── About.jsx    ← static info page
+  └── src/index.js             
+  ← starts the React app
+        └── src/App.jsx        
+        ← sets up pages and navigation
+              ├── Navbar.jsx   
+              ← shows the nav links at the top
+              ├── Home.jsx     
+              ← fetches quake data, shows the map
+              │     ├── MapComponent.jsx   
+              ← draws the map and popups
+              │     └── quakeUtils.js      
+              ← cleans/normalizes quake data
+              ├── Favorites.jsx            
+              ← shows saved favorites
+              │     └── useFavorites.js   
+              ← reads/writes to localStorage
+              └── About.jsx    
+              ← static info page
 
 Frontend talks to Backend:
   Home.jsx → fetch('/api/quakes') → setupProxy.js forwards to → server/index.js
@@ -42,6 +51,8 @@ Frontend talks to Backend:
 | `server/models/Quake.js` | nothing | defines the shape of quake data in MongoDB |
 | `server/middleware/auth.js` | request headers | allows or blocks the request |
 
+---
+### Christina's Code
 ---
 
 ## src/index.js — App Entry Point

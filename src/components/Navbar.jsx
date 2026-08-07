@@ -5,19 +5,25 @@ import "../App.css";
 function Navbar() {
   return (
     <nav className="navbar">
+      <div className="navbar-inner">
+        <div className="navbar-logo">
+          The Ground Shakes
+        </div>
 
-      <Link to="/" className="nav-button">
-        Home
-      </Link>
+        <div className="navbar-links">
+          <Link to="/" className="navbar-link">
+            Home
+          </Link>
 
-      <Link to="/About" className="nav-button">
-        About
-      </Link>
+          <Link to="/About" className="navbar-link">
+            About
+          </Link>
 
-      <Link to="/Favorites" className="nav-button">
-        Favorites
-      </Link>
-
+          <Link to="/Favorites" className="navbar-link">
+            Favorites
+          </Link>
+        </div>
+      </div>
     </nav>
   );
 }
