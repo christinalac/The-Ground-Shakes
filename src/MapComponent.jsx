@@ -14,13 +14,48 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { getQuakeCoordinates } from "./utils/quakeUtils";
 import { useFavorites } from "./hooks/useFavorites";
 
-const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => {
+// Style for a normal earthquake marker
+const normalStyle = new Style({
+  image: new CircleStyle({
+    radius: 7,
+    fill: new Fill({ color: "#c0392b" }),
+    stroke: new Stroke({ color: "#fdfdfd", width: 2 }),
+  }),
+});
+
+// Style for a marker that matches the search
+const highlightStyle = new Style({
+  image: new CircleStyle({
+    radius: 10,
+    fill: new Fill({ color: "#f39c12" }),
+    stroke: new Stroke({ color: "#fff", width: 2.5 }),
+  }),
+});
+
+// Style for markers that do NOT match the search (dimmed)
+const dimmedStyle = new Style({
+  image: new CircleStyle({
+    radius: 5,
+    fill: new Fill({ color: "rgba(150,150,150,0.4)" }),
+    stroke: new Stroke({ color: "rgba(200,200,200,0.4)", width: 1 }),
+  }),
+});
+
+const MapComponent = ({
+  quakes = [],
+  isLoading = false,
+  errorMessage = "",
+  searchTerm = "",
+  matchedQuakes = [],
+}) => {
   const mapRef = useRef(null);
   const popupRef = useRef(null);
+  const mapInstanceRef = useRef(null); // keep map reference for zoom-to-fit
   const [status, setStatus] = useState("Loading earthquakes...");
   const [selectedQuake, setSelectedQuake] = useState(null);
   const { isFavorite, toggleFavorite } = useFavorites();
 
+  // Build the map and markers when quakes load
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -40,6 +75,8 @@ const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => 
         zoom: 2,
       }),
     });
+
+    mapInstanceRef.current = { map, vectorSource };
 
     const popupOverlay = new Overlay({
       element: popupRef.current,
@@ -83,17 +120,7 @@ const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => 
         });
 
         feature.set("quake", quake);
-
-        feature.setStyle(
-          new Style({
-            image: new CircleStyle({
-              radius: 7,
-              fill: new Fill({ color: "#c0392b" }),
-              stroke: new Stroke({ color: "#fdfdfd", width: 2 }),
-            }),
-          })
-        );
-
+        feature.setStyle(normalStyle);
         return feature;
       })
       .filter(Boolean);
@@ -114,18 +141,80 @@ const MapComponent = ({ quakes = [], isLoading = false, errorMessage = "" }) => 
       map.un("singleclick", handleClick);
       map.un("pointermove", handlePointerMove);
       map.setTarget(null);
+      mapInstanceRef.current = null;
     };
   }, [quakes, isLoading, errorMessage]);
+
+  // When search changes, update marker styles and zoom to matched results
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+    const { map, vectorSource } = mapInstanceRef.current;
+    const hasSearch = searchTerm.trim().length > 0;
+
+    // Build a set of matched IDs for fast lookup
+    const matchedIds = new Set(
+      matchedQuakes.map((q) => q._id || q.usgsId).filter(Boolean)
+    );
+
+    // Re-style every feature
+    vectorSource.getFeatures().forEach((feature) => {
+      const quake = feature.get("quake");
+      const id = quake?._id || quake?.usgsId;
+
+      if (!hasSearch) {
+        feature.setStyle(normalStyle);
+      } else if (matchedIds.has(id)) {
+        feature.setStyle(highlightStyle);
+      } else {
+        feature.setStyle(dimmedStyle);
+      }
+    });
+
+    // Zoom the map to fit all matched markers
+    if (hasSearch && matchedQuakes.length > 0) {
+      const matchedCoords = matchedQuakes
+        .map(getQuakeCoordinates)
+        .filter(Boolean)
+        .map(({ lon, lat }) => fromLonLat([lon, lat]));
+
+      if (matchedCoords.length === 1) {
+        // Single result — zoom in directly
+        map.getView().animate({ center: matchedCoords[0], zoom: 6, duration: 600 });
+      } else if (matchedCoords.length > 1) {
+        // Multiple results — fit the view to the extent of all matches
+        const xs = matchedCoords.map((c) => c[0]);
+        const ys = matchedCoords.map((c) => c[1]);
+        const extent = [
+          Math.min(...xs),
+          Math.min(...ys),
+          Math.max(...xs),
+          Math.max(...ys),
+        ];
+        map.getView().fit(extent, { padding: [60, 60, 60, 60], duration: 600, maxZoom: 8 });
+      }
+
+      setStatus(`Highlighting ${matchedQuakes.length} match${matchedQuakes.length !== 1 ? "es" : ""} for "${searchTerm}"`);
+    } else if (hasSearch && matchedQuakes.length === 0) {
+      setStatus(`No matches found for "${searchTerm}"`);
+    } else {
+      setStatus(`Showing ${vectorSource.getFeatures().length} earthquake markers — click a marker for details`);
+    }
+  }, [searchTerm, matchedQuakes]);
 
   const quakeId = selectedQuake?._id || selectedQuake?.usgsId;
   const favorited = quakeId ? isFavorite(quakeId) : false;
 
   return (
     <div className="map-container">
-      <p className="map-status">{status}</p>
+      <p className="map-status" role="status" aria-live="polite">{status}</p>
 
       <div className="map-wrapper">
-        <div ref={mapRef} className="map-view" />
+        <div
+          ref={mapRef}
+          className="map-view"
+          role="application"
+          aria-label="Interactive earthquake map"
+        />
 
         <div
           ref={popupRef}
