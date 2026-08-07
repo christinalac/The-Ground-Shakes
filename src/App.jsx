@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Favorites from "./pages/Favorites";
+import Footer from "./components/Footer";
 
 import "./App.css";
 
@@ -75,6 +76,7 @@ function App() {
             <Route path="/favorites" element={<Favorites />} />
           </Routes>
         </div>
+        <Footer />
       </div>
     </BrowserRouter>
   );
