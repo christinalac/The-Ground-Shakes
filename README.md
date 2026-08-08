@@ -1,49 +1,88 @@
-# Getting Started with Create React App
+# The Ground Shakes
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Live Demo: https://the-ground-shakes-app.vercel.app/
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+The Ground Shakes is a real-time earthquake visualization tool powered by USGS seismic data. Earthquakes are synced to a secure backend, normalized, and displayed on an interactive map with detailed information popups.
 
-### `npm start`
+You can explore recent seismic activity, view detailed earthquake information, and save important events for later review.
 
-Runs the app in the development mode.\
+This project combines a modern React frontend, a Node and Express backend, MongoDB storage, and an earthy modern design system with optional dark mode support.
 
-### `npm test`
+## Setup Instructions
 
-Launches the test runner in the interactive watch mode.\
+### Prerequisites
 
-### `npm run build`
+* Node.js installed
+* npm installed
+* MongoDB running locally or a MongoDB connection string
+* Git installed
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. Clone the Repository
+```bash
+git clone https://github.com/christinalac/The-Ground-Shakes
+cd The-Ground-Shakes
+```
 
-### `npm run eject`
+### 2. Install Frontend Dependencies
+From the project directory, run:
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 3. Configure the Backend
+Open a new terminal and navigate to the server directory:
+```bash
+cd server
+npm install
+```
+Create a local `.env` file in the `server` directory and add your MongoDB connection string.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 4. Start the Backend
+From the `server` directory, run:
+```bash
+node index.js
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 5. Start the Frontend
+Open another terminal and navigate back to the project directory:
+```bash
+cd The-Ground-Shakes
+npm start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The application will then open in your browser.
 
-### 'Pushing items onto our github
+## API Documentation
 
-## 'Create a new branch!' (Please do this everytime you make changes)
+The backend provides REST API endpoints for retrieving and synchronizing earthquake data.
 
-Ctrl + Shift + P
-Type: 'Git: Create Branch' and select from list
-Enter name for new branch
-Choose source branch to base the new branch (main or master)
-You will automatically be put on that branch after creation
+Method   Endpoint           Description                              
+GET      /api/quakes        Retrieves recent earthquake data            
+POST     /api/quakes/sync   Syncs earthquake data from the USGS feed 
 
-## 'Pushing it'
-Ctrl + Shift + `
-Type: 'git push'
-Type: 'git -m "add your comment here"
-Type: 'git add ."
+API requests require an `Authorization` header.
+Example:
+```http
+Authorization: Bearer <value>
+```
+The current authentication middleware checks for the presence of an authorization header.
 
-## Authentication Check
-Authentication middleware is used to protect the GET and POST endpoints. The middleware returns 402 Unauthorized as a response to a request without a authorization header
+Earthquake data is provided by the USGS and is processed and stored in MongoDB before being served to the frontend
+
+## User Roles + Workflows
+
+There is only one user role
+Users can view earthquake activity around the globe, view earthquake information, and favorite earthquakes
+
+Workflow:
+1. View earthquakes on the interactive map
+2. Select an earthquake to see its details
+3. Favorite chosen earthquakes
+4. View and manage favorited earthquakes in the Favorites page
+
+## AI Assistance Disclosure
+
+AIs tools including Claude and ChatGPT were used in this project to help us code, debug our code, and help understand any problem we had. Everything that was generated was reviewed and also edited if necessary. We are able to understand and explain everything in our code
+
