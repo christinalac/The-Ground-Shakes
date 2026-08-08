@@ -34,9 +34,6 @@ export function getQuakeCoordinates(quake) {
     return { lon: coords[0], lat: coords[1] };
   }
 
-  // if (typeof quake?.lng === 'number' && typeof quake?.lat === 'number') {
-  //   return { lon: quake.lng, lat: quake.lat };
-  // }
   if (typeof quake?.lng === 'number' && typeof quake?.lat === 'number') {
   return { lon: quake.lng, lat: quake.lat };
 }

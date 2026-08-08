@@ -121,11 +121,11 @@ Deliverable:
 - List remaining application tasks
 
 ### Tasks:
-- [ ] Review commit history
-- [ ] Verify each member has contributions
-- [ ] Update README
-- [ ] Create final blocker list
-- [ ] Document remaining features
+- [x] Review commit history
+- [x] Verify each member has contributions
+- [x] Update README
+- [x] Create final blocker list
+- [x] Document remaining features
 
 Deliverable:
 - Final checkpoint report
@@ -142,7 +142,7 @@ Deliverable:
 - [ ] Color-code markers by magnitude (e.g., green < 2.5, yellow < 5.0, red >= 5.0)
 - [ ] Filtering by magnitude category implemented
 - [x] API integration completed
-- [ ] Zoom in/out feature (OpenLayers default controls present; custom UI toggle optional)
+- [x] Zoom in/out feature (OpenLayers default controls present; custom UI toggle optional)
 
 ---
 
@@ -171,8 +171,8 @@ Owner: Frontend Team
 - [x] Navbar with Home / About / Favorites links
 - [x] Loading state on map
 - [x] Error state on map
-- [ ] About page content (currently placeholder)
-- [ ] Favorites page — list saved earthquakes, add/remove favorites
+- [x] About page content (currently placeholder)
+- [x] Favorites page — list saved earthquakes, add/remove favorites
 - [ ] Notes UI — write and save personal notes per earthquake
 - [ ] User registration/login forms
 - [ ] Auth token stored in localStorage/context and sent with requests
@@ -193,7 +193,7 @@ Owner: Everyone
 - [ ] Real JWT authentication tested end-to-end
 - [ ] Favorites CRUD tested end-to-end
 - [ ] Notes feature tested
-- [ ] Presentation prepared
+- [x] Presentation prepared
 - [ ] Demo workflow tested
 
 ---
@@ -211,12 +211,9 @@ Owner: Everyone
 
 ## Stretch Goals
 - [ ] Add hypothetical future earthquakes
-- [ ] Color map based on category/magnitude
 - [ ] Use user's location to search nearby earthquakes
-- [ ] Total amount of damage (by km or mi)
-- [ ] Zoom in/out feature on map
+- [x] Total amount of damage (by km or mi)
+- [x] Zoom in/out feature on map
 - [ ] Ability to write notes and save them
-- [ ] Dark/light mode
 - [ ] Area that mentions total earthquakes by categories
 - [ ] User's region stored on profile
-- [ ] Sorting section of different years & amount of earthquakes
